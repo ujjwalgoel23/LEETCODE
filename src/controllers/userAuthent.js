@@ -17,7 +17,7 @@ const register= async(req,res)=>{
 
         const user= await User.create(req.body);
 
-       const token= jwt.sign({_id:user._id, emailId:emailId},process.env.JWT_KEY,{expiresIn:3600});
+       const token= jwt.sign({_id:user._id, emailId:emailId,role:'user'},process.env.JWT_KEY,{expiresIn:3600});
        res.cookie('token',token,{expiresIn:"1h"}); 
        res.status(201).send("User Registered Successfully");
 
@@ -40,7 +40,7 @@ const login=async(req,res)=>{
         if(!match){
             throw new Error ("INVALID CREDENTIALS")
         }
-        const token= jwt.sign({_id:user._id, emailId:emailId},process.env.JWT_KEY,{expiresIn:3600});
+        const token= jwt.sign({_id:user._id, emailId:emailId, role:user.role},process.env.JWT_KEY,{expiresIn:3600});
         res.cookie('token',token,{expiresIn:"1h"});
         res.status(200).send("LOGGED IN  SUCCESSFULLY");
 
@@ -72,4 +72,27 @@ const logout=async(req,res)=>{
 
 }
 
-module.exports={register,login,logout};
+const adminRegister=async(req,res)=>{
+      try{
+        //validate the data
+        validate(req.body);
+
+        const {firstName,emailId,password}=req.body;
+
+        req.body.password= await bcrypt.hash(password,10);
+        
+
+        const user= await User.create(req.body);
+
+       const token= jwt.sign({_id:user._id, emailId:emailId,role:user.role},process.env.JWT_KEY,{expiresIn:3600});
+       res.cookie('token',token,{expiresIn:"1h"}); 
+       res.status(201).send("user Registered Successfully ");
+
+    }
+    catch(err){
+        res.status(400).send("ERROR : "+err);
+    }
+
+}
+
+module.exports={register,login,logout,adminRegister};

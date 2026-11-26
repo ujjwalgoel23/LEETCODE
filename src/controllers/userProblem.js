@@ -2,7 +2,7 @@ const {getLanguageById,submitBatch,submitToken}=require("../utils/problemUtility
 const Problem=require('../models/problem');
 
 
-const createProblem=async (req,res)=>{
+const createProblem = async (req,res)=>{
           
     const { title,description,difficulty,tags,
         visibleTestCases,hiddenTestCases,startCode,
@@ -53,7 +53,7 @@ const createProblem=async (req,res)=>{
        
 } // done
 
-const updateProblem=async(req,res)=>{
+const updateProblem = async(req,res)=>{
     const {id}=req.params;
 
      const { title,description,difficulty,tags,
@@ -109,7 +109,7 @@ const updateProblem=async(req,res)=>{
 
 } //done
 
-const deleteProblem=async(req,res)=>{
+const deleteProblem = async(req,res)=>{
     const {id}=req.params;
 
     try{
@@ -137,16 +137,48 @@ const deleteProblem=async(req,res)=>{
 
 } //done
 
-const fetchProblem=async(req,res)=>{
+const getProblemById = async(req,res)=>{
+  const {id}=req.params;
+
+  try{
+       if(!id)
+        return res.status(400).send("INVALID ID FIELD");
+
+            const fetchProblem = await Problem.findById(id);
+
+             if(!fetchProblem){
+                return res.status(404).send("Problem is Missing");
+            }
+            res.status(200).send(fetchProblem);
+  }
+  catch(error){
+    res.status(403).send("ERROR : "+error);
+  }
 
 }
 
 const getAllProblem=async(req,res)=>{
+  
+  try{
+       
+            const fetchProblem = await Problem.find({});
+            // agar hme koi filter lgana hoga toh aase lgaynge---
+            //await problem.find({'difficulty:'easy});
+
+             if(fetchProblem.length==0){
+                return res.status(404).send("Problem is Missing");
+            }
+            res.status(200).send(fetchProblem);
+  }
+  catch(error){
+    res.status(500).send("ERROR : "+error);
+  }
 
 }
 
-const solvedAllProblembyUser =async(req,res)=>{
+const solvedAllProblemByUser =async(req,res)=>{
+
 
 }
 
-module.exports={createProblem,updateProblem,deleteProblem,fetchProblem,getAllProblem,solvedAllProblembyUser};
+module.exports={createProblem,updateProblem,deleteProblem,getProblemById,getAllProblem,solvedAllProblemByUser};

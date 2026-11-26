@@ -1,4 +1,5 @@
-const axios = require('axios'); 
+const axios = require('axios');
+const submissions=require("../controllers/userProblem"); 
 
 const getLanguageById = (lang)=>{
     const language={
@@ -9,17 +10,23 @@ const getLanguageById = (lang)=>{
     return language[lang.toLowerCase()];
 
 }
+const waiting =async(timer)=>{
+    setTimeout(()=>{
+        return 1;
+    },timer);
+
+}
 
 const submitBatch = async(submissions)=>{
     const options={
     method:'POST',
-    url:"https://api.onlinecompiler.io/api/judge0/submissions/batch",
+    url:"https://judge0-ce.p.rapidapi.com/submissions/batch",
     params:{
-        base64_encoded:'true'
+        base64_encoded:'false'
     },
     headers:{
-        'x-rapidapi-key':'099b82a72a2283186674ed5c8c41a040',
-        // 'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
+        'x-rapidapi-key':'b7055c95acmsh34946e84e4e6f61p1448adjsn7ebce46cd253',
+        'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
         'Content-Type':'application/json'
     },
     data:{
@@ -33,18 +40,13 @@ async function fetchData(){
         return response.data;
     }
     catch(err){
-        throw new Error("ERROR : "+err) 
+        throw new Error("ERROR in submitBatch : "+err);
     }
 }
 return await fetchData();
 }
 
-const waiting =async(timer)=>{
-    setTimeout(()=>{
-        return 1;
-    },timer);
 
-}
 
 const submitToken = async(resultToken)=>{
     
@@ -53,12 +55,12 @@ const submitToken = async(resultToken)=>{
         url:"https://api.onlinecompiler.io/api/judge0/submissions/batch",
         params:{
             tokens:resultToken.join(","),
-            base64_encoded:'true',
+            base64_encoded:'false',
             fields:'*'
         },
         headers:{
-            'x-rapidapi-key':'099b82a72a2283186674ed5c8c41a040',
-            // 'x-rapidapi-host':""
+            'x-rapidapi-key':'0d06a704a2msha80d5bafcf3f455p1d5167jsn8e6166b29a91',
+             'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
         }
     };
     async function fetchData(){
